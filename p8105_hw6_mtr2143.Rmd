@@ -6,6 +6,7 @@ output: github_document
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(knitr)
 
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
 options(
@@ -15,3 +16,49 @@ options(
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
+
+# Problem 1
+
+```{r, read in birthweight data and see if there are any NA values, message=FALSE}
+birthweight_data <- read_csv("https://www.p8105.com/data/birthweight.csv")
+
+birthweight_missing <- map_df(birthweight_data, ~sum(is.na(.))) %>% 
+  pivot_longer(
+    cols = babysex:wtgain,
+    names_to = "variable", 
+    values_to = "num_missing"
+  )
+
+birthweight_missing %>% kable()
+```
+
+From the table above, we can see that none of the variables contain any NA values. 
+
+```{r, tidying birthweight data, message=FALSE}
+birthweight_df <-
+  birthweight_data %>% 
+  mutate(
+    babysex = ifelse(babysex == 1, "male", "female") %>% 
+      forcats::as_factor(),
+    frace = case_when(
+      frace == 1 ~ "white", 
+      frace == 2 ~ "black", 
+      frace == 3 ~ "asian", 
+      frace == 4 ~ "puerto rican", 
+      frace == 8 ~ "other", 
+      frace == 9 ~ "unknown"
+    ) %>% 
+      forcats::as_factor(),
+    malform = ifelse(malform == 0, "absent", "present") %>% 
+      forcats::as_factor(), 
+    mrace = case_when(
+      mrace == 1 ~ "white", 
+      mrace == 2 ~ "black", 
+      mrace == 3 ~ "asian", 
+      mrace == 4 ~ "puerto rican", 
+      mrace == 8 ~ "other"
+    ) %>% 
+      forcats::as_factor()
+  )
+```
+
