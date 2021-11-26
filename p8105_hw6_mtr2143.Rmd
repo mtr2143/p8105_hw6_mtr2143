@@ -208,4 +208,27 @@ log_b0_b1_plot <-
 r_squared_plot / log_b0_b1_plot
 ```
 
-The distributions of r-squared and the log of the product of the estimated slope and intercept per model appear above. Because of the bootstrapping, we can see that the distributions of both estimates follow a relatively normal distribution. 
+The distributions of r-squared and the log of the product of the estimated slope and intercept per model appear above. Because of the bootstrapping, we can see that the distributions of both estimates follow a relatively normal distribution. The center for the R-squared estimate appears to be around 0.91, and the center for the log of the product of the estimated slope and intercept appears to be around 2.01. 
+
+```{r, 2.5 and 97.5 quantiles}
+ci_df <-
+  boot_straps %>% 
+  pivot_longer(
+    cols = r.squared:log_b0_b1, 
+    names_to = "estimate_type", 
+    values_to = "estimate"
+  ) %>% 
+  group_by(estimate_type) %>% 
+  summarize(
+    lower_bound = quantile(estimate, probs = 0.025), 
+    upper_bound = quantile(estimate, probs = 0.975)
+  ) %>% 
+  arrange(desc(estimate_type))
+
+ci_df %>% 
+  knitr::kable(
+    digits = 3,
+    caption = "95% Confidence Intervals for R-Squared and Log of Product of Estimated Slope and Intercept"
+  )
+```
+
