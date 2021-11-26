@@ -8,6 +8,7 @@ output: github_document
 library(tidyverse)
 library(modelr)
 library(knitr)
+library(patchwork)
 
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
 options(
@@ -189,6 +190,22 @@ boot_straps <-
     log_b0_b1 = log(.Intercept.*tmin)
   ) %>% 
   select(.id, r.squared, log_b0_b1)
-
 ```
 
+```{r, distributions of r-squared and log of product of slope and intercept, fig.dim=c(7,5)}
+r_squared_plot <-
+  boot_straps %>% 
+    ggplot(aes(x = r.squared)) +
+    geom_density() +
+    xlab("R-squared Estimate") + ylab("Density")
+
+log_b0_b1_plot <-
+  boot_straps %>% 
+    ggplot(aes(x = log_b0_b1)) + 
+    geom_density() +
+    xlab("Log of Product of Estimated Slope and Intercept") + ylab("Density")
+
+r_squared_plot / log_b0_b1_plot
+```
+
+The distributions of r-squared and the log of the product of the estimated slope and intercept per model appear above. Because of the bootstrapping, we can see that the distributions of both estimates follow a relatively normal distribution. 
