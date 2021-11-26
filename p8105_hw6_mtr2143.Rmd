@@ -34,6 +34,19 @@ birthweight_missing %>% kable()
 
 From the table above, we can see that none of the variables contain any NA values. 
 
+```{r, see if frace variable has any unknown, message=FALSE}
+birthweight_data %>% 
+  group_by(frace) %>% 
+  summarize(
+    total = n()
+  ) %>% 
+  kable()
+```
+
+Per the data description, we know that the variable correspond to the father's race has a value for observations where the value is unknown (`frace == 9`), However, from the table above, we can see that there aren't any observations that have this value. 
+
+Now that we know there aren't any missing values, we can fit a model. 
+
 ```{r, tidying birthweight data, message=FALSE}
 birthweight_df <-
   birthweight_data %>% 
@@ -45,8 +58,7 @@ birthweight_df <-
       frace == 2 ~ "black", 
       frace == 3 ~ "asian", 
       frace == 4 ~ "puerto rican", 
-      frace == 8 ~ "other", 
-      frace == 9 ~ "unknown"
+      frace == 8 ~ "other"
     ) %>% 
       forcats::as_factor(),
     malform = ifelse(malform == 0, "absent", "present") %>% 
@@ -60,5 +72,9 @@ birthweight_df <-
     ) %>% 
       forcats::as_factor()
   )
+```
+
+```{r, regression model, message=FALSE}
+
 ```
 
