@@ -79,5 +79,14 @@ birthweight_df <-
 
 ```{r, regression model, message=FALSE}
 bwt_fit <- lm(bwt ~ fincome + frace + gaweeks + mrace + momage + smoken, data = birthweight_df)
+
+bwt_fit %>% 
+  broom::tidy() %>% 
+  select(term, estimate, p.value) %>% 
+  mutate(
+    term = str_replace(term, "^frace", "frace: "), 
+    term = str_replace(term, "^mrace", "mrace: ")
+  ) %>% 
+  knitr::kable(digits = 3)
 ```
 
