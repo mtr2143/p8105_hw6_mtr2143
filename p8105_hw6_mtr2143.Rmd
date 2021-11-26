@@ -78,6 +78,6 @@ birthweight_df <-
 ```
 
 ```{r, regression model, message=FALSE}
-
+bwt_fit <- lm(bwt ~ fincome + frace + gaweeks + mrace + momage + smoken, data = birthweight_df)
 ```
 
