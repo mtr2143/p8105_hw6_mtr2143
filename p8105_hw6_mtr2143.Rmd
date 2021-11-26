@@ -98,7 +98,13 @@ bwt_fit %>%
 
 I chose to run a model where baby's birthweight (g) is predicted by family income, father's race, gestational age at delivery (weeks), mother's race, mother's age at delivery (years), and average number of cigarettes smoked per day during pregnancy. The goal of this model was to predict birthweight based on known biological factors that influence birthweight (gestational age and number of cigarettes smoked during pregnancy) with social factor (family income and father and mother's race). 
 
-```{r, regression diagnostics}
-
+```{r, plot of model residuals against fitted values, fig.dim=c(7,5)}
+birthweight_df %>% 
+  modelr::add_predictions(bwt_fit) %>% 
+  modelr::add_residuals(bwt_fit) %>% 
+  ggplot(aes(x = pred, y = resid)) + 
+  geom_point(alpha = .3) +
+  xlab("Predicted Value") + ylab("Residual")
 ```
 
+The above plot shows the residuals vs the predicted values. For the assumption of linearity to be hold, we'd expect the points to be distributed randomly around y = 0, but that is not true of this model. There also appears to be outliers present in our data given the points that are far outside the main clustering of where the predicted value is between 2500 and 2500 and the residual is 0. 
