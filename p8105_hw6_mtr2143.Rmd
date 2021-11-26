@@ -147,3 +147,20 @@ cv_df %>%
 ```
 
 From the plot above, we can see the model I fit is by far the worst. Judging by the RMSE, the model with the three-way interaction is the best predictor of a baby's birthweight. However, given that a model with interaction is difficult to describe, I'd argue that the main effect model is the best model.
+
+# Problem 2
+
+```{r, load weather df}
+weather_df <- 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2017-01-01",
+    date_max = "2017-12-31") %>%
+  mutate(
+    name = recode(id, USW00094728 = "CentralPark_NY"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) %>%
+  select(name, id, everything())
+```
+
