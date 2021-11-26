@@ -6,6 +6,7 @@ output: github_document
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(modelr)
 library(knitr)
 
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
@@ -15,11 +16,16 @@ options(
 )
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
+
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE
+)
 ```
 
 # Problem 1
 
-```{r, read in birthweight data and see if there are any NA values, message=FALSE}
+```{r, read in birthweight data and see if there are any NA values}
 birthweight_data <- read_csv("https://www.p8105.com/data/birthweight.csv")
 
 birthweight_missing <- map_df(birthweight_data, ~sum(is.na(.))) %>% 
@@ -34,7 +40,7 @@ birthweight_missing %>% kable()
 
 From the table above, we can see that none of the variables contain any NA values. 
 
-```{r, see if frace variable has any unknown, message=FALSE}
+```{r, see if frace variable has any unknown}
 birthweight_data %>% 
   group_by(frace) %>% 
   summarize(
@@ -47,7 +53,7 @@ Per the data description, we know that the variable correspond to the father's r
 
 Now that we know there aren't any missing values, we can fit a model. 
 
-```{r, tidying birthweight data, message=FALSE}
+```{r, tidying birthweight data}
 birthweight_df <-
   birthweight_data %>% 
   mutate(
@@ -77,7 +83,7 @@ birthweight_df <-
   )
 ```
 
-```{r, regression model, message=FALSE}
+```{r, regression model}
 bwt_fit <- lm(bwt ~ fincome + frace + gaweeks + mrace + momage + smoken, data = birthweight_df)
 
 bwt_fit %>% 
@@ -91,3 +97,8 @@ bwt_fit %>%
 ```
 
 I chose to run a model where baby's birthweight (g) is predicted by family income, father's race, gestational age at delivery (weeks), mother's race, mother's age at delivery (years), and average number of cigarettes smoked per day during pregnancy. The goal of this model was to predict birthweight based on known biological factors that influence birthweight (gestational age and number of cigarettes smoked during pregnancy) with social factor (family income and father and mother's race). 
+
+```{r, regression diagnostics}
+
+```
+
