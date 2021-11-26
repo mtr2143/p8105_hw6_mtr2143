@@ -164,3 +164,31 @@ weather_df <-
   select(name, id, everything())
 ```
 
+```{r, bootstrapping}
+set.seed(12551)
+
+boot_straps <- 
+  weather_df %>% 
+  modelr::bootstrap(n = 5000) %>% 
+  mutate(
+    models = map(strap, ~lm(tmax ~ tmin, data = .x)),
+    model_est = map(models, broom::glance), 
+    model_coef = map(models, broom::tidy)
+  ) %>% 
+  select(-strap, -models) %>%
+  unnest(model_est) %>% 
+  select(.id, model_coef, r.squared) %>% 
+  unnest(model_coef) %>% 
+  select(.id, term, estimate, r.squared) %>% 
+  pivot_wider(
+    names_from = "term", 
+    values_from = "estimate", 
+    names_repair = "universal"
+  ) %>% 
+  mutate(
+    log_b0_b1 = log(.Intercept.*tmin)
+  ) %>% 
+  select(.id, r.squared, log_b0_b1)
+
+```
+
